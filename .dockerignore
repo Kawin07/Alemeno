@@ -1,0 +1,10 @@
+.git
+.gitignore
+.env
+.idea/
+.vscode/
+venv/
+__pycache__/
+*.pyc
+transactions.csv
+Backend_DevOps_Assignment.pdf
