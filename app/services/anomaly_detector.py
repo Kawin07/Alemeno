@@ -6,11 +6,11 @@ DOMESTIC_ONLY_MERCHANTS = {
 }
 
 def detect_anomalies(df: pd.DataFrame) -> pd.DataFrame:
-    # Add anomaly columns if not exist
+
     df['is_anomaly'] = False
     df['anomaly_reasons'] = [[] for _ in range(len(df))]
     
-    # 1. Statistical outlier detection: amount > 3 * median per account
+
     medians = df.groupby('account_id')['amount'].median()
     
     for idx, row in df.iterrows():
@@ -20,13 +20,13 @@ def detect_anomalies(df: pd.DataFrame) -> pd.DataFrame:
         merchant = str(row['merchant']).upper()
         currency = row['currency']
         
-        # Outlier check
+
         if acc_id in medians and pd.notnull(medians[acc_id]):
             median_amt = medians[acc_id]
             if median_amt > 0 and amount > 3 * median_amt:
                 reasons.append(f"Amount {amount} exceeds 3x median ({median_amt:.2f}) for account {acc_id}")
                 
-        # Currency mismatch check
+
         if currency == 'USD' and merchant in DOMESTIC_ONLY_MERCHANTS:
             reasons.append(f"USD currency used with domestic-only merchant {row['merchant']}")
             

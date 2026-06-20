@@ -3,11 +3,11 @@ from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, Asyn
 from sqlalchemy.orm import sessionmaker, declarative_base
 from app.config import settings
 
-# Async engine for FastAPI
+
 async_engine = create_async_engine(settings.ASYNC_DATABASE_URL, echo=False)
 AsyncSessionLocal = async_sessionmaker(async_engine, class_=AsyncSession, expire_on_commit=False)
 
-# Sync engine for Celery workers & Alembic
+
 sync_engine = create_engine(settings.DATABASE_URL, echo=False)
 SyncSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=sync_engine)
 

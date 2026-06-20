@@ -7,7 +7,7 @@ from app.config import settings
 
 logger = logging.getLogger(__name__)
 
-# Configure Gemini
+
 if settings.GEMINI_API_KEY:
     genai.configure(api_key=settings.GEMINI_API_KEY)
 
@@ -44,7 +44,7 @@ Transactions:
     try:
         raw_response = _call_gemini(prompt)
         
-        # Clean up response (sometimes Gemini returns markdown code blocks)
+
         cleaned_response = raw_response.strip()
         if cleaned_response.startswith('```json'):
             cleaned_response = cleaned_response[7:]
@@ -55,7 +55,7 @@ Transactions:
             
         results = json.loads(cleaned_response)
         
-        # Map back to transactions
+
         for item in results:
             idx = item.get('txn_idx')
             if idx is not None and 0 <= idx < len(uncategorised_txns):

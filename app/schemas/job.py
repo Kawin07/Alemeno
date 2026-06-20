@@ -18,7 +18,7 @@ class JobStatusResponse(BaseModel):
     status: str
     created_at: datetime
     completed_at: Optional[datetime] = None
-    summary: Optional[dict] = None  # We will fill this if completed
+    summary: Optional[dict] = None
 
     model_config = ConfigDict(from_attributes=True)
 

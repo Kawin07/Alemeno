@@ -27,16 +27,16 @@ def process_csv_job(job_id_str: str):
             job.status = "processing"
             db.commit()
             
-            # 1. Parsing & Cleaning
+
             df = parse_csv(job.file_content)
             df_clean = clean_data(df)
             job.row_count_clean = len(df_clean)
             db.commit()
             
-            # 2. Anomaly Detection
+
             df_anomaly = detect_anomalies(df_clean)
             
-            # 3. LLM Classification for uncategorised
+
             records = df_anomaly.to_dict(orient='records')
             
             uncategorised = []
@@ -59,9 +59,9 @@ def process_csv_job(job_id_str: str):
                         cat = item.get('llm_category')
                         if cat:
                             records[idx]['llm_category'] = cat
-                            records[idx]['category'] = cat # overwrite for summary purposes
+                            records[idx]['category'] = cat
             
-            # 4. Aggregations for summary
+
             total_inr = sum(r['amount'] for r in records if r['currency'] == 'INR' and not math.isnan(r['amount']))
             total_usd = sum(r['amount'] for r in records if r['currency'] == 'USD' and not math.isnan(r['amount']))
             anomaly_count = sum(1 for r in records if r.get('is_anomaly'))
@@ -87,10 +87,10 @@ def process_csv_job(job_id_str: str):
                 "category_breakdown": cat_breakdown
             }
             
-            # 5. LLM Narrative Summary
+
             summary_result, raw_summary_response, llm_sum_failed = generate_narrative(aggregates)
             
-            # 6. Bulk Insert Transactions
+
             txn_objects = []
             for r in records:
                 amount = float(r['amount']) if not math.isnan(r['amount']) else 0.0
@@ -116,7 +116,7 @@ def process_csv_job(job_id_str: str):
                 
             db.bulk_save_objects(txn_objects)
             
-            # 7. Insert JobSummary
+
             job_summary = JobSummary(
                 job_id=job.id,
                 total_spend_inr=total_inr,

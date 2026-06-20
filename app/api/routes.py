@@ -5,12 +5,12 @@ from sqlalchemy.orm import selectinload
 from typing import Optional
 from app.database import get_db
 from app.models import Job, Transaction, JobSummary
-from app.schemas import JobResponse, JobStatusResponse, JobListResponse, JobResultsResponse, TransactionResponse, JobSummaryResponse
+from app.schemas import JobResponse, JobStatusResponse, JobListResponse, JobResultsResponse
 import uuid
 
 router = APIRouter(prefix="/jobs", tags=["jobs"])
 
-# Import the celery task
+
 from app.worker.tasks import process_csv_job
 
 @router.post("/upload", response_model=JobResponse, status_code=201)
@@ -26,7 +26,7 @@ async def upload_job(file: UploadFile = File(...), db: AsyncSession = Depends(ge
     if not content.endswith(b'\n') and content:
         row_count_raw += 1
         
-    # Exclude header row if exists
+
     if row_count_raw > 0:
         row_count_raw -= 1
         
@@ -40,7 +40,7 @@ async def upload_job(file: UploadFile = File(...), db: AsyncSession = Depends(ge
     await db.commit()
     await db.refresh(job)
     
-    # Enqueue Celery task
+
     process_csv_job.delay(str(job.id))
     
     return job

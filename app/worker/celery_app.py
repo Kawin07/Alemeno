@@ -15,5 +15,5 @@ celery.conf.update(
     worker_prefetch_multiplier=1,
 )
 
-# Autodiscover tasks
+
 celery.autodiscover_tasks(["app.worker"])

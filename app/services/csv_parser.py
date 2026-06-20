@@ -6,7 +6,7 @@ def parse_csv(content: bytes) -> pd.DataFrame:
     try:
         df = pd.read_csv(io.BytesIO(content))
         
-        # Ensure column names are stripped of whitespace and lowercase
+
         df.columns = df.columns.str.strip().str.lower()
         
         expected_columns = {
@@ -14,7 +14,7 @@ def parse_csv(content: bytes) -> pd.DataFrame:
             'status', 'category', 'account_id', 'notes'
         }
         
-        # Some flexibility if columns are missing
+
         if not expected_columns.issubset(set(df.columns)):
             missing = expected_columns - set(df.columns)
             raise ValueError(f"Missing required columns: {missing}")
