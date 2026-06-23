@@ -16,7 +16,7 @@ def _call_gemini(prompt: str) -> str:
         raise ValueError("Gemini API key is not configured or is the default placeholder.")
     return _call_gemini_api(prompt)
 
-@retry(stop=stop_after_attempt(5), wait=wait_exponential(multiplier=2, min=5, max=60), reraise=True)
+@retry(stop=stop_after_attempt(4), wait=wait_exponential(multiplier=2, min=5, max=60), reraise=True)
 def _call_gemini_api(prompt: str) -> str:
     model = genai.GenerativeModel('gemini-flash-latest')
     response = model.generate_content(prompt)
@@ -65,7 +65,7 @@ Transactions:
         
     except Exception as e:
         logger.error(f"LLM classification failed: {str(e)}")
-        raise Exception(f"LLM classification failed: {str(e)}")
+        return uncategorised_txns, str(e), True
 
 def generate_narrative(aggregates: Dict) -> Tuple[Dict, str, bool]:
     """
@@ -101,5 +101,5 @@ Data:
         
     except Exception as e:
         logger.error(f"LLM narrative generation failed: {str(e)}")
-        raise Exception(f"LLM narrative generation failed: {str(e)}")
+        return {"narrative": None, "risk_level": None}, str(e), True
 
